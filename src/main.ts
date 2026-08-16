@@ -24,7 +24,7 @@ const soloBtn = document.querySelector<HTMLButtonElement>("#solo")!;
 const crowdBtn = document.querySelector<HTMLButtonElement>("#crowd")!;
 
 const NAMES = ["ada", "rio", "yuki", "hex", "sol", "neo", "pix", "kai", "zed", "omi", "tea", "wen"];
-const SITE = "https://doodles-faces.vercel.app";
+const SITE = "https://doodlefaces.site";
 
 let current = { name: "anonymous", withName: "", seed: 0 };
 let mode: "solo" | "crowd" = "solo";
