@@ -1,5 +1,5 @@
 import { createCanvas, type SKRSContext2D } from "@napi-rs/canvas";
-import type { IncomingMessage, ServerResponse } from "node:http";
+import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { buildFace, caption, hashStr } from "./_lib/dna.js";
 import { drawFace } from "./_lib/draw.js";
 import { paper } from "./_lib/ink.js";
@@ -14,7 +14,7 @@ const asDom = (ctx: SKRSContext2D): Dom2D => ctx as unknown as Dom2D;
 const W = 1200;
 const H = 630;
 
-export default function handler(req: IncomingMessage, res: ServerResponse): void {
+export default function handler(req: VercelRequest, res: VercelResponse): void {
   const url = new URL(req.url ?? "/", "http://localhost");
   const name = (url.searchParams.get("u") || "anonymous").trim().slice(0, 64);
   const seed = hashStr(name.toLowerCase());
@@ -39,5 +39,5 @@ export default function handler(req: IncomingMessage, res: ServerResponse): void
   const img = canvas.toBuffer("image/png");
   res.setHeader("Content-Type", "image/png");
   res.setHeader("Cache-Control", "public, max-age=86400, s-maxage=86400, immutable");
-  res.end(img);
+  res.send(img);
 }
