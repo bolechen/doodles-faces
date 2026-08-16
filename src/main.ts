@@ -1,4 +1,5 @@
 import { createIcons, Dices, Download, GitFork, Share2, Sparkles, User, Users } from "lucide";
+import { inject } from "@vercel/analytics";
 import { hashStr } from "./rng";
 import { buildFace, caption } from "./face";
 import { drawFace, renderAvatar, renderCrowd, renderShareCard } from "./draw";
@@ -7,6 +8,7 @@ import "./style.css";
 createIcons({
   icons: { Dices, Download, GitFork, Share2, Sparkles, User, Users },
 });
+inject();
 
 const canvas = document.querySelector<HTMLCanvasElement>("#c")!;
 const ctx = canvas.getContext("2d")!;
