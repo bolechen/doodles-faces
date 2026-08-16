@@ -1,7 +1,7 @@
-import { arc3, makeProj, P, pin, visible } from "./geom";
-import { blob, ink, paper, patch, wash } from "./ink";
-import { buildFace, headPath, mulberry32 } from "./dna";
-import type { Face, Proj, Pt3, Rng } from "./types";
+import { arc3, makeProj, P, pin, visible } from "./geom.js";
+import { blob, ink, paper, patch, wash } from "./ink.js";
+import { buildFace, headPath, mulberry32 } from "./dna.js";
+import type { Face, Proj, Pt3, Rng } from "./types.js";
 
 function clampOnSkull(T: Face, x: number, y: number): [number, number] {
   return pin(x, y, T.hrx, T.hry, 0.14);

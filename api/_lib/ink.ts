@@ -1,5 +1,5 @@
-import { chaikin, resample } from "./geom";
-import type { InkOpt, Pt, Rng } from "./types";
+import { chaikin, resample } from "./geom.js";
+import type { InkOpt, Pt, Rng } from "./types.js";
 
 export const PAPER = "#f3eee2";
 export const INK_RGB: [number, number, number] = [31, 29, 26];

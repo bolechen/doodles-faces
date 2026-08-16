@@ -1,4 +1,4 @@
-import type { Proj, Pt, Pt3 } from "./types";
+import type { Proj, Pt, Pt3 } from "./types.js";
 
 export function resample(pts: Pt[], step: number): Pt[] {
   if (pts.length < 2) return pts.slice();

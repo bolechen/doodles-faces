@@ -2,7 +2,7 @@
 // Mirrors src/face.ts + the palette constants from src/ink.ts, but depends on
 // nothing (no canvas, no DOM) so Vercel can bundle it without file tracing.
 
-import type { Face } from "./types";
+import type { Face } from "./types.js";
 
 export type Rng = () => number;
 
