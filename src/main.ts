@@ -18,7 +18,6 @@ const stage = document.querySelector<HTMLElement>("#stage")!;
 const userInput = document.querySelector<HTMLInputElement>("#seed-name")!;
 const withInput = document.querySelector<HTMLInputElement>("#with")!;
 const whoEl = document.querySelector("#who")!;
-const seedEl = document.querySelector("#seedLabel")!;
 const captionEl = document.querySelector("#caption")!;
 const toastEl = document.querySelector("#toast")!;
 const hintEl = document.querySelector("#hint")!;
@@ -92,7 +91,6 @@ function render(): void {
   renderHero(seed);
   const face = buildFace(seed);
   whoEl.textContent = name;
-  seedEl.textContent = String(seed);
   captionEl.textContent = caption(face);
   document.title = `${name} · doodles faces`;
 
