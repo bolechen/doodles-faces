@@ -15,7 +15,7 @@
     <meta property="og:site_name" content="doodles faces" />
     <meta property="og:title" content="doodles faces: username to ink avatar" />
     <meta property="og:description" content="Type a name. Get a graphite doodle face. Same name, same face." />
-    <meta property="og:image" content="https://doodles-faces.vercel.app/og.png" />
+    <meta property="og:image" content="https://doodles-faces.vercel.app/api/og?u=ada" />
     <meta property="og:image:type" content="image/png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
@@ -24,7 +24,7 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="doodles faces: username to ink avatar" />
     <meta name="twitter:description" content="Type a name. Get a graphite doodle face. Same name, same face." />
-    <meta name="twitter:image" content="https://doodles-faces.vercel.app/og.png" />
+    <meta name="twitter:image" content="https://doodles-faces.vercel.app/api/og?u=ada" />
     <meta name="twitter:image:alt" content="A grid of graphite doodle faces on cream paper" />
 
     <script type="application/ld+json">
@@ -42,13 +42,14 @@
   </head>
   <body>
     <div class="sheet">
-      <header class="top">
-        <div>
+      <section class="hero">
+        <canvas id="hero" width="1280" height="420" aria-hidden="true"></canvas>
+        <div class="hero-text">
           <h1 class="brand">doodles faces</h1>
-          <p class="lede">A name becomes a graphite head. Click a face in the crowd and it is someone else.</p>
+          <p class="lede">your name, drawn by a pencil. click a face and it becomes someone else.</p>
         </div>
         <div class="stamp">no ai · seed art · paper</div>
-      </header>
+      </section>
 
       <div class="desk">
         <div class="stage" id="stage">
@@ -61,7 +62,7 @@
             <label for="seed-name">your name</label>
             <div class="row">
               <input id="seed-name" name="seed-name" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" placeholder="type a name" maxlength="64" />
-              <button id="rand" class="ghost" type="button">rnd</button>
+              <button id="rand" class="ghost icon-btn" type="button" title="random name"><i data-lucide="dices"></i><span class="sr">random</span></button>
             </div>
           </div>
           <div>
@@ -69,8 +70,8 @@
             <input id="with" name="draw-with" type="text" autocomplete="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" placeholder="optional other name" maxlength="64" />
           </div>
           <div class="tabs" role="tablist">
-            <button id="solo" class="ghost" type="button" aria-pressed="true">portrait</button>
-            <button id="crowd" class="ghost" type="button" aria-pressed="false">crowd</button>
+            <button id="solo" class="ghost" type="button" aria-pressed="true"><i data-lucide="user"></i>portrait</button>
+            <button id="crowd" class="ghost" type="button" aria-pressed="false"><i data-lucide="users"></i>crowd</button>
           </div>
           <p class="caption" id="caption">egg · bags · bowl</p>
           <div class="meta">
@@ -78,8 +79,8 @@
             <span>seed <b id="seedLabel">—</b></span>
           </div>
           <div class="actions">
-            <button id="share" class="ghost" type="button">share</button>
-            <button id="png" type="button">save png</button>
+            <button id="share" class="ghost" type="button"><i data-lucide="share-2"></i>share</button>
+            <button id="png" type="button"><i data-lucide="download"></i>save png</button>
           </div>
         </aside>
       </div>
@@ -87,8 +88,8 @@
       <footer>
         <span>graphite on cream · javascript only</span>
         <span class="links">
-          <a href="https://x.com/mannay/status/2087522034351796728">inspiration: mannay</a>
-          <a href="https://github.com/bolechen/doodles-faces">open source</a>
+          <a href="https://x.com/mannay/status/2087522034351796728"><i data-lucide="sparkles"></i>inspiration: mannay</a>
+          <a href="https://github.com/bolechen/doodles-faces"><i data-lucide="git-fork"></i>open source</a>
         </span>
       </footer>
     </div>

@@ -1,10 +1,17 @@
+import { createIcons, Dices, Download, GitFork, Share2, Sparkles, User, Users } from "lucide";
 import { hashStr } from "./rng";
 import { buildFace, caption } from "./face";
 import { drawFace, renderAvatar, renderCrowd, renderShareCard } from "./draw";
 import "./style.css";
 
+createIcons({
+  icons: { Dices, Download, GitFork, Share2, Sparkles, User, Users },
+});
+
 const canvas = document.querySelector<HTMLCanvasElement>("#c")!;
 const ctx = canvas.getContext("2d")!;
+const hero = document.querySelector<HTMLCanvasElement>("#hero")!;
+const heroCtx = hero.getContext("2d")!;
 const stage = document.querySelector<HTMLElement>("#stage")!;
 const userInput = document.querySelector<HTMLInputElement>("#seed-name")!;
 const withInput = document.querySelector<HTMLInputElement>("#with")!;
@@ -57,10 +64,30 @@ function sizeCanvas(crowd: boolean): void {
   stage.classList.toggle("crowd", crowd);
 }
 
+function renderHero(seed: number): void {
+  const { width: w, height: h } = hero;
+  heroCtx.clearRect(0, 0, w, h);
+  const cols = 3, rows = 2, cw = w / cols, ch = h / rows;
+  heroCtx.fillStyle = "#f3eee2";
+  heroCtx.fillRect(0, 0, w, h);
+  for (let i = 0; i < cols * rows; i++) {
+    const s = (seed + Math.imul(i + 1, 0x9e3779b9)) >>> 0;
+    const x = (i % cols) * cw + cw / 2;
+    const y = Math.floor(i / cols) * ch + ch / 2;
+    heroCtx.save();
+    heroCtx.beginPath();
+    heroCtx.rect((i % cols) * cw + 8, Math.floor(i / cols) * ch + 8, cw - 16, ch - 16);
+    heroCtx.clip();
+    drawFace(heroCtx, x, y, Math.min(cw, ch) / 250, buildFace(s));
+    heroCtx.restore();
+  }
+}
+
 function render(): void {
   const name = current.name;
   const seed = hashStr(name.toLowerCase());
   current.seed = seed;
+  renderHero(seed);
   const face = buildFace(seed);
   whoEl.textContent = name;
   seedEl.textContent = String(seed);
