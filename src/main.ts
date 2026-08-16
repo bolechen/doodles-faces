@@ -192,8 +192,7 @@ function randomName(): void {
   const n = NAMES[Math.floor(Math.random() * NAMES.length)] + (Math.random() < 0.4 ? String(10 + Math.floor(Math.random() * 89)) : "");
   userInput.value = n;
   schedule();
-  userInput.focus();
-  userInput.select();
+  // keep focus where it is; don't yank the user's cursor into the input
 }
 
 const params = new URLSearchParams(location.search);
