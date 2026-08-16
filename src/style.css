@@ -16,7 +16,7 @@ body {
     radial-gradient(1200px 700px at 12% -10%, #fff8ea 0%, transparent 55%),
     radial-gradient(900px 600px at 110% 20%, #e4d8c4 0%, transparent 50%),
     var(--paper2);
-  font: 17px/1.5 "Patrick Hand", "Caveat", "Comic Sans MS", cursive, sans-serif;
+  font: 14px/1.45 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   -webkit-font-smoothing: antialiased;
 }
 .sheet {
@@ -54,22 +54,20 @@ body {
 }
 .hero-text, .stamp { z-index: 1; }
 .brand {
-  margin: 0; font-family: "Caveat", "Patrick Hand", cursive;
-  font-size: clamp(52px, 9vw, 108px);
-  letter-spacing: 0.01em; line-height: 0.85; text-wrap: balance;
-  transform: rotate(-1.2deg);
+  margin: 0; font-size: clamp(44px, 8vw, 96px);
+  letter-spacing: -0.04em; line-height: 0.95; text-wrap: balance;
   animation: rise 600ms var(--ease) 90ms both;
 }
 .lede {
   margin: 10px 0 0; color: var(--muted); max-width: 44ch; text-wrap: pretty;
-  font-size: 15px;
+  font-size: 13px;
   animation: rise 600ms var(--ease) 170ms both;
 }
 .stamp {
   position: absolute; right: 16px; top: 14px;
   writing-mode: vertical-rl;
   text-orientation: mixed;
-  font-size: 12px;
+  font-size: 10px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--muted);
@@ -94,19 +92,27 @@ body {
 canvas { display: block; width: 100%; height: 100%; }
 .hint {
   position: absolute; left: 10px; bottom: 8px;
-  font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;
+  font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
   color: var(--muted); pointer-events: none;
 }
 .panel { display: flex; flex-direction: column; gap: 12px; }
-label { display: block; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+label { display: block; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
 .row { display: flex; gap: 8px; }
 #seed-name, #with {
   flex: 1; min-width: 0; padding: 14px 14px;
   border: 1px solid var(--line); background: var(--panel); color: var(--ink);
-  font: 19px/1.3 "Patrick Hand", cursive; outline: none;
+  outline: none;
+}
+#seed-name {
+  font: 20px/1.3 "Gochi Hand", "Patrick Hand", cursive;
+}
+#with {
+  font: 16px/1.3 "Gochi Hand", "Patrick Hand", cursive;
+  padding: 9px 11px;
 }
 #seed-name:focus, #with:focus { border-color: var(--ink); }
 #seed-name::placeholder { color: #a3998c; }
+#with::placeholder { color: #a3998c; }
 button {
   display: inline-flex; align-items: center; justify-content: center; gap: 7px;
   padding: 11px 12px; border: 1px solid var(--ink); background: var(--ink);
@@ -123,9 +129,9 @@ button.icon-btn { padding: 11px 13px; }
   position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
   overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
 }
-.meta { display: flex; justify-content: space-between; gap: 10px; font-size: 13px; color: var(--muted); }
+.meta { display: flex; justify-content: space-between; gap: 10px; font-size: 11px; color: var(--muted); }
 .meta b { color: var(--ink); font-weight: 600; word-break: break-all; }
-.caption { min-height: 2.6em; color: var(--muted); font-size: 14px; }
+.caption { min-height: 2.6em; color: var(--muted); font-size: 12px; }
 .tabs { display: flex; gap: 6px; }
 .tabs button { flex: 1; }
 .tabs button svg { width: 14px; height: 14px; }
@@ -133,7 +139,7 @@ button.icon-btn { padding: 11px 13px; }
 .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .toast {
   position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%) translateY(8px);
-  background: var(--ink); color: var(--paper); font-size: 13px;
+  background: var(--ink); color: var(--paper); font-size: 12px;
   padding: 8px 12px; border-radius: 999px; opacity: 0; pointer-events: none;
   transition: opacity .18s var(--ease), transform .18s var(--ease);
 }
@@ -141,7 +147,7 @@ button.icon-btn { padding: 11px 13px; }
 footer {
   margin-top: 16px; padding-top: 12px; border-top: 1px dashed var(--line);
   display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;
-  color: var(--muted); font-size: 13px; position: relative;
+  color: var(--muted); font-size: 11px; position: relative;
 }
 footer a { color: inherit; margin-left: 14px; text-decoration: none; }
 footer a:hover { color: var(--ink); }
