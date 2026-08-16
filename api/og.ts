@@ -1,5 +1,4 @@
 import { createCanvas, type SKRSContext2D } from "@napi-rs/canvas";
-import type { CanvasRenderingContext2D } from "../../src/types";
 import { buildFace, caption } from "../src/face";
 import { drawFace } from "../src/draw";
 import { paper } from "../src/ink";
@@ -7,18 +6,17 @@ import { hashStr } from "../src/rng";
 
 // @napi-rs/canvas context is API-compatible with the DOM 2D context we draw with,
 // minus a few unused legacy members; the cast bridges the nominal typing.
-type Ctx2D = SKRSContext2D;
-const asDom = (ctx: Ctx2D): CanvasRenderingContext2D => ctx as unknown as CanvasRenderingContext2D;
+type Dom2D = CanvasRenderingContext2D;
+const asDom = (ctx: SKRSContext2D): Dom2D => ctx as unknown as Dom2D;
 
 export const config = { runtime: "nodejs20.x" };
 
 const W = 1200;
 const H = 630;
 
-function renderOG(name: string): Buffer {
+function renderOG(name: string): Uint8Array {
   const canvas = createCanvas(W, H);
-  const skCtx = canvas.getContext("2d");
-  const ctx = asDom(skCtx);
+  const ctx = asDom(canvas.getContext("2d"));
   const seed = hashStr(name.toLowerCase());
   paper(ctx, W, H, seed);
   drawFace(ctx, W / 2, H * 0.44, W / 780, buildFace(seed));
@@ -41,7 +39,7 @@ export default function handler(req: Request): Response {
   const url = new URL(req.url);
   const name = (url.searchParams.get("u") || "anonymous").trim().slice(0, 64);
   const img = renderOG(name);
-  return new Response(img, {
+  return new Response(new Uint8Array(img) as unknown as BodyInit, {
     headers: {
       "Content-Type": "image/png",
       "Cache-Control": "public, max-age=86400, s-maxage=86400, immutable",
