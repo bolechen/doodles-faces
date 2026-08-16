@@ -1,4 +1,4 @@
-import { createIcons, Dices, Download, GitFork, Share2, Sparkles, User, Users } from "lucide";
+import { createIcons, Dices, Download, GitFork, Moon, Share2, Sparkles, Sun, User, Users } from "lucide";
 import { inject } from "@vercel/analytics";
 import { hashStr } from "./rng";
 import { buildFace, caption } from "./face";
@@ -6,7 +6,7 @@ import { drawFace, renderAvatar, renderCrowd, renderShareCard } from "./draw";
 import "./style.css";
 
 createIcons({
-  icons: { Dices, Download, GitFork, Share2, Sparkles, User, Users },
+  icons: { Dices, Download, GitFork, Moon, Share2, Sparkles, Sun, User, Users },
 });
 inject();
 
@@ -23,6 +23,7 @@ const toastEl = document.querySelector("#toast")!;
 const hintEl = document.querySelector("#hint")!;
 const soloBtn = document.querySelector<HTMLButtonElement>("#solo")!;
 const crowdBtn = document.querySelector<HTMLButtonElement>("#crowd")!;
+const themeBtn = document.querySelector<HTMLButtonElement>("#theme")!;
 
 const NAMES = ["ada", "rio", "yuki", "hex", "sol", "neo", "pix", "kai", "zed", "omi", "tea", "wen"];
 const SITE = "https://doodlefaces.site";
@@ -181,8 +182,8 @@ async function share(): Promise<void> {
 
 function setMode(next: "solo" | "crowd"): void {
   mode = next;
-  soloBtn.setAttribute("aria-pressed", String(next === "solo"));
-  crowdBtn.setAttribute("aria-pressed", String(next === "crowd"));
+  soloBtn.setAttribute("aria-selected", String(next === "solo"));
+  crowdBtn.setAttribute("aria-selected", String(next === "crowd"));
   schedule();
 }
 
@@ -193,12 +194,36 @@ function randomName(): void {
   // keep focus where it is; don't yank the user's cursor into the input
 }
 
+// ---- dark mode ----
+function applyTheme(dark: boolean): void {
+  document.documentElement.dataset.theme = dark ? "dark" : "light";
+  try {
+    localStorage.setItem("df-theme", dark ? "dark" : "light");
+  } catch { /* private mode */ }
+  themeBtn.innerHTML = dark ? '<i data-lucide="sun"></i>' : '<i data-lucide="moon"></i>';
+  createIcons({ icons: { Moon, Sun } });
+}
+function initTheme(): void {
+  let dark: boolean;
+  try {
+    const saved = localStorage.getItem("df-theme");
+    dark = saved ? saved === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+  } catch {
+    dark = matchMedia("(prefers-color-scheme: dark)").matches;
+  }
+  applyTheme(dark);
+}
+initTheme();
+themeBtn.addEventListener("click", () => {
+  applyTheme(document.documentElement.dataset.theme !== "dark");
+});
+
 const params = new URLSearchParams(location.search);
 userInput.value = normalizeName(params.get("u") || params.get("user"));
 withInput.value = normalizeName(params.get("with"));
 if (params.get("view") === "crowd") mode = "crowd";
-soloBtn.setAttribute("aria-pressed", String(mode === "solo"));
-crowdBtn.setAttribute("aria-pressed", String(mode === "crowd"));
+soloBtn.setAttribute("aria-selected", String(mode === "solo"));
+crowdBtn.setAttribute("aria-selected", String(mode === "crowd"));
 schedule(Boolean(userInput.value || withInput.value || mode === "crowd"));
 
 const onType = () => {

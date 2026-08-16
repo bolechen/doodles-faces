@@ -9,7 +9,8 @@
     <meta name="theme-color" content="#f3eee2" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Gochi+Hand&family=Patrick+Hand&display=swap" rel="stylesheet" />
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Gochi+Hand&display=swap" as="style" />
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Gochi+Hand&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
     <link rel="canonical" href="https://doodlefaces.site/" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
@@ -52,9 +53,12 @@
           <p class="lede">your name, drawn by a pencil. click a face and it becomes someone else.</p>
         </div>
         <div class="stamp">no ai · seed art · paper</div>
+        <button id="theme" class="theme-toggle" type="button" aria-label="toggle dark mode">
+          <i data-lucide="moon" aria-hidden="true"></i>
+        </button>
       </section>
 
-      <div class="desk">
+      <main class="desk">
         <div class="stage" id="stage">
           <canvas id="c" width="900" height="900" aria-label="generated face"></canvas>
           <div class="hint" id="hint">same name, same face</div>
@@ -72,9 +76,9 @@
             <label for="with">draw with</label>
             <input id="with" name="draw-with" type="text" autocomplete="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" placeholder="optional other name" maxlength="64" />
           </div>
-          <div class="tabs" role="tablist">
-            <button id="solo" class="ghost" type="button" aria-pressed="true"><i data-lucide="user"></i>portrait</button>
-            <button id="crowd" class="ghost" type="button" aria-pressed="false"><i data-lucide="users"></i>crowd</button>
+          <div class="tabs" role="tablist" aria-label="view mode">
+            <button id="solo" class="ghost" type="button" role="tab" aria-selected="true"><i data-lucide="user"></i>portrait</button>
+            <button id="crowd" class="ghost" type="button" role="tab" aria-selected="false"><i data-lucide="users"></i>crowd</button>
           </div>
           <p class="caption" id="caption">egg · bags · bowl</p>
           <div class="meta">
@@ -85,7 +89,7 @@
             <button id="png" type="button"><i data-lucide="download"></i>save png</button>
           </div>
         </aside>
-      </div>
+      </main>
 
       <footer>
         <span>graphite on cream · javascript only</span>
