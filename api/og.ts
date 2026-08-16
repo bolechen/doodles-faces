@@ -13,8 +13,7 @@ const asDom = (ctx: SKRSContext2D): Dom2D => ctx as unknown as Dom2D;
 const W = 1200;
 const H = 630;
 
-export default function handler(req: Request): Response {
-  // req.url may be relative in dev; resolve against a dummy origin.
+export function GET(req: Request): Response {
   const url = new URL(req.url, "http://localhost");
   const name = (url.searchParams.get("u") || "anonymous").trim().slice(0, 64);
   const seed = hashStr(name.toLowerCase());
