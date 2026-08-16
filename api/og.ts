@@ -1,8 +1,14 @@
-import { createCanvas } from "@napi-rs/canvas";
+import { createCanvas, type SKRSContext2D } from "@napi-rs/canvas";
+import type { CanvasRenderingContext2D } from "../../src/types";
 import { buildFace, caption } from "../src/face";
 import { drawFace } from "../src/draw";
 import { paper } from "../src/ink";
 import { hashStr } from "../src/rng";
+
+// @napi-rs/canvas context is API-compatible with the DOM 2D context we draw with,
+// minus a few unused legacy members; the cast bridges the nominal typing.
+type Ctx2D = SKRSContext2D;
+const asDom = (ctx: Ctx2D): CanvasRenderingContext2D => ctx as unknown as CanvasRenderingContext2D;
 
 export const config = { runtime: "nodejs20.x" };
 
@@ -11,7 +17,8 @@ const H = 630;
 
 function renderOG(name: string): Buffer {
   const canvas = createCanvas(W, H);
-  const ctx = canvas.getContext("2d");
+  const skCtx = canvas.getContext("2d");
+  const ctx = asDom(skCtx);
   const seed = hashStr(name.toLowerCase());
   paper(ctx, W, H, seed);
   drawFace(ctx, W / 2, H * 0.44, W / 780, buildFace(seed));
