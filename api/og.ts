@@ -9,7 +9,7 @@ import { hashStr } from "../src/rng";
 type Dom2D = CanvasRenderingContext2D;
 const asDom = (ctx: SKRSContext2D): Dom2D => ctx as unknown as Dom2D;
 
-export const config = { runtime: "nodejs20.x" };
+export const config = { runtime: "nodejs" };
 
 const W = 1200;
 const H = 630;
