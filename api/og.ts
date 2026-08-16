@@ -1,4 +1,5 @@
 import { createCanvas, type SKRSContext2D } from "@napi-rs/canvas";
+import type { IncomingMessage, ServerResponse } from "node:http";
 import { buildFace, caption, hashStr } from "./_lib/dna.js";
 import { drawFace } from "./_lib/draw.js";
 import { paper } from "./_lib/ink.js";
@@ -13,8 +14,8 @@ const asDom = (ctx: SKRSContext2D): Dom2D => ctx as unknown as Dom2D;
 const W = 1200;
 const H = 630;
 
-export function GET(req: Request): Response {
-  const url = new URL(req.url, "http://localhost");
+export default function handler(req: IncomingMessage, res: ServerResponse): void {
+  const url = new URL(req.url ?? "/", "http://localhost");
   const name = (url.searchParams.get("u") || "anonymous").trim().slice(0, 64);
   const seed = hashStr(name.toLowerCase());
   const T = buildFace(seed);
@@ -36,10 +37,7 @@ export function GET(req: Request): Response {
   ctx.restore();
 
   const img = canvas.toBuffer("image/png");
-  return new Response(new Uint8Array(img) as unknown as BodyInit, {
-    headers: {
-      "Content-Type": "image/png",
-      "Cache-Control": "public, max-age=86400, s-maxage=86400, immutable",
-    },
-  });
+  res.setHeader("Content-Type", "image/png");
+  res.setHeader("Cache-Control", "public, max-age=86400, s-maxage=86400, immutable");
+  res.end(img);
 }
