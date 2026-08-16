@@ -1,44 +1,94 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>doodles-faces</title>
-    <meta name="description" content="Type a username → get a hand-drawn face. Pure JS, no AI. Shareable & downloadable." />
-    <meta name="theme-color" content="#e9e4d8" />
-    <meta property="og:title" content="doodles-faces" />
-    <meta property="og:description" content="Username → unique ink doodle avatar. Same name, same face." />
+    <title>doodles faces: username to ink avatar</title>
+    <meta name="description" content="Type a name. Get a graphite doodle face. Same name, same face. Pure JavaScript, no AI." />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#f3eee2" />
+    <link rel="canonical" href="https://doodles-faces.vercel.app/" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:site_name" content="doodles faces" />
+    <meta property="og:title" content="doodles faces: username to ink avatar" />
+    <meta property="og:description" content="Type a name. Get a graphite doodle face. Same name, same face." />
+    <meta property="og:image" content="https://doodles-faces.vercel.app/og.png" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="A grid of graphite doodle faces on cream paper" />
+    <meta property="og:url" content="https://doodles-faces.vercel.app/" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="doodles faces: username to ink avatar" />
+    <meta name="twitter:description" content="Type a name. Get a graphite doodle face. Same name, same face." />
+    <meta name="twitter:image" content="https://doodles-faces.vercel.app/og.png" />
+    <meta name="twitter:image:alt" content="A grid of graphite doodle faces on cream paper" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "doodles faces",
+        "url": "https://doodles-faces.vercel.app/",
+        "applicationCategory": "DesignApplication",
+        "operatingSystem": "Web",
+        "description": "Type a name and get a unique hand-drawn ink avatar. Same name, same face.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+      }
+    </script>
   </head>
   <body>
-    <main>
-      <header>
-        <h1>doodles·faces</h1>
-        <p>username → ink avatar · same name, same face</p>
+    <div class="sheet">
+      <header class="top">
+        <div>
+          <h1 class="brand">doodles faces</h1>
+          <p class="lede">A name becomes a graphite head. Click a face in the crowd and it is someone else.</p>
+        </div>
+        <div class="stamp">no ai · seed art · paper</div>
       </header>
 
-      <div class="field">
-        <label for="user">username</label>
-        <div class="row">
-          <input id="user" type="text" autocomplete="username" spellcheck="false"
-            placeholder="type a name…" maxlength="64" />
-          <button id="rand" class="ghost" type="button" title="random name">rnd</button>
+      <div class="desk">
+        <div class="stage" id="stage">
+          <canvas id="c" width="900" height="900" aria-label="generated face"></canvas>
+          <div class="hint" id="hint">same name, same face</div>
         </div>
+
+        <aside class="panel">
+          <div>
+            <label for="seed-name">your name</label>
+            <div class="row">
+              <input id="seed-name" name="seed-name" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" placeholder="type a name" maxlength="64" />
+              <button id="rand" class="ghost" type="button">rnd</button>
+            </div>
+          </div>
+          <div>
+            <label for="with">draw with</label>
+            <input id="with" name="draw-with" type="text" autocomplete="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" placeholder="optional other name" maxlength="64" />
+          </div>
+          <div class="tabs" role="tablist">
+            <button id="solo" class="ghost" type="button" aria-pressed="true">portrait</button>
+            <button id="crowd" class="ghost" type="button" aria-pressed="false">crowd</button>
+          </div>
+          <p class="caption" id="caption">egg · bags · bowl</p>
+          <div class="meta">
+            <span>@<b id="who">—</b></span>
+            <span>seed <b id="seedLabel">—</b></span>
+          </div>
+          <div class="actions">
+            <button id="share" class="ghost" type="button">share</button>
+            <button id="png" type="button">save png</button>
+          </div>
+        </aside>
       </div>
 
-      <div class="stage">
-        <canvas id="c" width="720" height="720" aria-label="avatar"></canvas>
-      </div>
-
-      <div class="meta">
-        <span>@<b id="who">—</b></span>
-        <span>seed <b id="seedLabel">—</b></span>
-      </div>
-
-      <div class="actions">
-        <button id="share" class="ghost" type="button">share</button>
-        <button id="png" type="button">download</button>
-      </div>
-    </main>
+      <footer>
+        <span>graphite on cream · javascript only</span>
+        <a href="https://x.com/mannay/status/2087522034351796728">after mannay</a>
+      </footer>
+    </div>
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
     <script type="module" src="/src/main.ts"></script>
   </body>

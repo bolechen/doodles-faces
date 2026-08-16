@@ -14,6 +14,8 @@ export type Mouth = "flat" | "smile" | "smirk" | "grim" | "frown" | "open" | "li
 export type Hair = "bowl" | "buzz" | "spikes" | "curl" | "side" | "none" | "hat" | "baldspot";
 export type Facial = "none" | "stubble" | "mustache" | "goatee";
 export type Glasses = "none" | "round" | "square" | "shades";
+export type Mod = "none" | "visor" | "patch" | "cyber";
+export type Mark = "none" | "scar" | "seam" | "barcode";
 
 export type Face = {
   seed: number;
@@ -27,7 +29,11 @@ export type Face = {
   hair: Hair;
   facial: Facial;
   glasses: Glasses;
+  mod: Mod;
+  mark: Mark;
   ink: string;
+  halo: string | null;
+  skin: string | null;
   yaw: number;
   pitch: number;
   asym: number;
@@ -49,4 +55,6 @@ export type InkOpt = {
   alpha?: number;
   samples?: number;
   smooth?: boolean;
+  ghost?: boolean;
+  boost?: number;
 };

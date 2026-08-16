@@ -1,9 +1,16 @@
-# doodles-faces
+# doodles faces
 
-Type a **username** → get a hand-drawn ink avatar.  
-Same name → same face. Canvas + TypeScript, no AI.
+Type a name. Get a graphite doodle. Same name, same face.
 
-Inspired by [@mannay](https://x.com/mannay/status/2087522034351796728): parts are code, pinned on a rough 3D skull.
+Pure canvas + TypeScript. No AI, no framework.
+
+## Use
+
+- Type a name → unique portrait (`?u=ada`)
+- Optional `with=` draws two heads on one sheet
+- Crowd view: a 5×3 sheet, click a cell to reroll it
+- Share copies the URL and, when the browser allows it, a 1200×630 card
+- Save PNG exports the card (or the crowd sheet)
 
 ## Dev
 
@@ -20,17 +27,17 @@ pnpm dlx vercel
 pnpm dlx vercel --prod
 ```
 
-Vite static output in `dist/`. `vercel.json` points the build there.
+Static output in `dist/`. `vercel.json` installs with pnpm and publishes that folder.
 
 ## Layout
 
 ```
 src/
-  types.ts   # Face DNA
-  rng.ts     # mulberry32 + FNV
-  geom.ts    # 3D project / pin-to-skull
-  ink.ts     # dry-brush + paper grain
-  face.ts    # seed → traits
-  draw.ts    # painters (add a variant here)
-  main.ts    # username UI
+  types.ts   Face DNA
+  rng.ts     mulberry32 + FNV
+  geom.ts    3D project / pin-to-skull / graphite path
+  ink.ts     ribbon stroke, paper, grain, washes
+  face.ts    seed → traits
+  draw.ts    painters + share card + crowd
+  main.ts    desk UI
 ```

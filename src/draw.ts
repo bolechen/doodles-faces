@@ -1,5 +1,5 @@
 import { arc3, makeProj, P, pin, visible } from "./geom";
-import { blob, grain, ink, paper, patch } from "./ink";
+import { blob, grain, ink, paper, patch, wash } from "./ink";
 import { buildFace, headPath } from "./face";
 import { mulberry32 } from "./rng";
 import type { Face, Proj, Pt3, Rng } from "./types";
@@ -232,6 +232,9 @@ export function drawFace(ctx: CanvasRenderingContext2D, cx: number, cy: number, 
   const rng = mulberry32((T.seed * 9973 + 13) >>> 0);
   const C = T.ink;
   const proj = makeProj(cx, cy, 168 * s, T.yaw, T.pitch);
+  const origin = proj(0, 0, 0);
+  if (T.halo) wash(ctx, origin[0], origin[1] - 8 * s, 190 * s * T.hrx, 210 * s * T.hry, T.halo, rng);
+  if (T.skin) wash(ctx, origin[0], origin[1] + 6 * s, 150 * s * T.hrx, 170 * s * T.hry, T.skin, rng);
 
   ink(ctx, P(proj, [[-0.16, T.hry * 0.85, -0.05], [-0.1, T.hry * 1.25, -0.08], [0.1, T.hry * 1.25, -0.08], [0.16, T.hry * 0.85, -0.05]]), rng, {
     width: 2.1 * s, passes: 1, jitter: 0.8, color: C,
@@ -261,6 +264,51 @@ export function drawFace(ctx: CanvasRenderingContext2D, cx: number, cy: number, 
   const [mx] = clampOnSkull(T, aS, 0.45);
   drawMouth(ctx, proj, mx, s, T, rng, C);
   drawFacial(ctx, proj, mx, s, T, rng, C);
+  drawMark(ctx, proj, s, T, rng, C);
+  drawMod(ctx, proj, lEye, rEye, s, T, rng, C);
+}
+
+function drawMark(ctx: CanvasRenderingContext2D, proj: Proj, s: number, T: Face, rng: Rng, C: string): void {
+  if (T.mark === "none") return;
+  const side = T.yaw >= 0 ? 1 : -1;
+  if (T.mark === "scar") {
+    ink(ctx, P(proj, [[side * 0.18, -0.08, 0.3], [side * 0.42, 0.18, 0.28]]), rng, { width: 1.8 * s, passes: 1, jitter: 0.5, color: C });
+    for (let i = 0; i < 3; i++) {
+      const t = 0.2 + i * 0.25;
+      const x = side * (0.18 + 0.24 * t);
+      const y = -0.08 + 0.26 * t;
+      ink(ctx, P(proj, [[x - 0.03, y + 0.02, 0.3], [x + 0.03, y - 0.02, 0.3]]), rng, { width: 1.2 * s, passes: 1, jitter: 0.3, color: C });
+    }
+  } else if (T.mark === "seam") {
+    ink(ctx, P(proj, [[side * 0.52, 0.02, 0.2], [side * 0.54, 0.28, 0.18], [side * 0.42, 0.36, 0.18]]), rng, { width: 1.6 * s, passes: 1, jitter: 0.4, color: C });
+  } else {
+    for (let i = 0; i < 7; i++) {
+      const x = side * (0.32 + i * 0.03);
+      ink(ctx, P(proj, [[x, 0.38, 0.28], [x, 0.38 + (i % 3 ? 0.08 : 0.12), 0.28]]), rng, { width: i % 2 ? 1 : 1.8 * s, passes: 1, jitter: 0.2, color: C });
+    }
+  }
+}
+
+function drawMod(ctx: CanvasRenderingContext2D, proj: Proj, lE: Pt3, rE: Pt3, s: number, T: Face, rng: Rng, C: string): void {
+  if (T.mod === "none") return;
+  const E = T.yaw >= 0 ? rE : lE;
+  if (T.mod === "visor") {
+    const box: Pt3[] = [[-0.62, -0.14, 0.32], [0.62, -0.14, 0.32], [0.62, 0.12, 0.32], [-0.62, 0.12, 0.32]];
+    const p = P(proj, box);
+    patch(ctx, p, "#2a251f", rng, { alpha: 0.55, dx: 0, dy: 0 });
+    ink(ctx, p, rng, { width: 2 * s, closed: true, passes: 2, jitter: 0.45, color: C });
+  } else if (T.mod === "patch") {
+    const box: Pt3[] = [[E[0] - 0.2, E[1] - 0.22, 0.32], [E[0] + 0.2, E[1] - 0.22, 0.32], [E[0] + 0.16, E[1] + 0.22, 0.32], [E[0] - 0.16, E[1] + 0.22, 0.32]];
+    const p = P(proj, box);
+    patch(ctx, p, C, rng, { alpha: 0.9 });
+    ink(ctx, p, rng, { width: 2 * s, closed: true, passes: 2, jitter: 0.5, color: C });
+    ink(ctx, P(proj, [[E[0] + 0.16, E[1] - 0.18, 0.3], [E[0] > 0 ? -0.7 : 0.7, -0.36, 0.05]]), rng, { width: 1.6 * s, passes: 1, jitter: 0.4, color: C });
+  } else {
+    ink(ctx, P(proj, arc3(E[0], E[1], 0.16, 0, Math.PI * 2, 0.34, 14).slice(0, 14)), rng, { width: 2 * s, closed: true, passes: 2, jitter: 0.5, color: C });
+    ink(ctx, P(proj, arc3(E[0], E[1], 0.08, 0, Math.PI * 2, 0.34, 10).slice(0, 10)), rng, { width: 1.4 * s, closed: true, passes: 1, jitter: 0.35, color: C });
+    const [px, py] = proj(E[0], E[1], 0.34);
+    blob(ctx, px, py, 4 * s, C);
+  }
 }
 
 export function renderAvatar(ctx: CanvasRenderingContext2D, seed: number): void {
@@ -268,4 +316,43 @@ export function renderAvatar(ctx: CanvasRenderingContext2D, seed: number): void 
   paper(ctx, w, h, seed);
   drawFace(ctx, w / 2, h * 0.5, w / 720, buildFace(seed));
   grain(ctx, w, h, seed);
+}
+
+export function renderShareCard(
+  ctx: CanvasRenderingContext2D, seed: number, name: string, line: string,
+): void {
+  const { width: w, height: h } = ctx.canvas;
+  paper(ctx, w, h, seed);
+  drawFace(ctx, w / 2, h * 0.44, w / 820, buildFace(seed));
+  grain(ctx, w, h, seed);
+  ctx.save();
+  ctx.fillStyle = "#1f1d1a";
+  ctx.font = `600 ${Math.round(w * 0.055)}px ui-monospace, SFMono-Regular, Menlo, monospace`;
+  ctx.textAlign = "center";
+  ctx.fillText(`@${name}`, w / 2, h * 0.86);
+  ctx.globalAlpha = 0.55;
+  ctx.font = `${Math.round(w * 0.028)}px ui-monospace, SFMono-Regular, Menlo, monospace`;
+  ctx.fillText(line, w / 2, h * 0.91);
+  ctx.restore();
+}
+
+export function renderCrowd(ctx: CanvasRenderingContext2D, baseSeed: number, cols: number, rows: number): number[] {
+  const { width: w, height: h } = ctx.canvas;
+  paper(ctx, w, h, baseSeed);
+  const seeds: number[] = [];
+  const cw = w / cols, ch = h / rows;
+  for (let i = 0; i < cols * rows; i++) {
+    const seed = (baseSeed + Math.imul(i + 1, 0x9e3779b9)) >>> 0;
+    seeds.push(seed);
+    const x = (i % cols) * cw + cw / 2;
+    const y = Math.floor(i / cols) * ch + ch / 2;
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect((i % cols) * cw, Math.floor(i / cols) * ch, cw, ch);
+    ctx.clip();
+    drawFace(ctx, x, y, Math.min(cw, ch) / 280, buildFace(seed));
+    ctx.restore();
+  }
+  grain(ctx, w, h, baseSeed);
+  return seeds;
 }

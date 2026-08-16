@@ -1,28 +1,48 @@
 import type { Proj, Pt, Pt3 } from "./types";
 
-export function smooth(pts: Pt[], closed: boolean, samples = 8): Pt[] {
+export function resample(pts: Pt[], step: number): Pt[] {
   if (pts.length < 2) return pts.slice();
-  const p = pts.slice();
-  if (closed) {
-    p.unshift(pts[pts.length - 1]);
-    p.push(pts[0], pts[1]);
-  } else {
-    p.unshift(pts[0]);
-    p.push(pts[pts.length - 1]);
-  }
-  const out: Pt[] = [];
-  const segs = closed ? pts.length : pts.length - 1;
-  for (let i = 0; i < segs; i++) {
-    const p0 = p[i], p1 = p[i + 1], p2 = p[i + 2], p3 = p[i + 3];
-    for (let j = 0; j < samples; j++) {
-      const t = j / samples, t2 = t * t, t3 = t2 * t;
-      const f = (a: number, b: number, c: number, d: number) =>
-        0.5 * ((2 * b) + (-a + c) * t + (2 * a - 5 * b + 4 * c - d) * t2 + (-a + 3 * b - 3 * c + d) * t3);
-      out.push([f(p0[0], p1[0], p2[0], p3[0]), f(p0[1], p1[1], p2[1], p3[1])]);
+  const out: Pt[] = [[pts[0][0], pts[0][1]]];
+  let need = step;
+  for (let i = 1; i < pts.length; i++) {
+    let x0 = pts[i - 1][0], y0 = pts[i - 1][1];
+    const x1 = pts[i][0], y1 = pts[i][1];
+    let d = Math.hypot(x1 - x0, y1 - y0);
+    while (d >= need && d > 0) {
+      const t = need / d;
+      x0 += (x1 - x0) * t;
+      y0 += (y1 - y0) * t;
+      out.push([x0, y0]);
+      d = Math.hypot(x1 - x0, y1 - y0);
+      need = step;
     }
+    need -= d;
   }
-  if (!closed) out.push(pts[pts.length - 1]);
+  const last = pts[pts.length - 1], le = out[out.length - 1];
+  if (Math.hypot(last[0] - le[0], last[1] - le[1]) > step * 0.25) out.push([last[0], last[1]]);
   return out;
+}
+
+export function chaikin(pts: Pt[], closed: boolean, it: number): Pt[] {
+  let cur = pts;
+  while (it-- > 0) {
+    const out: Pt[] = [];
+    const n = cur.length;
+    if (!closed) out.push(cur[0]);
+    const end = closed ? n : n - 1;
+    for (let i = 0; i < end; i++) {
+      const a = cur[i], b = cur[(i + 1) % n];
+      out.push([a[0] * 0.75 + b[0] * 0.25, a[1] * 0.75 + b[1] * 0.25]);
+      out.push([a[0] * 0.25 + b[0] * 0.75, a[1] * 0.25 + b[1] * 0.75]);
+    }
+    if (!closed) out.push(cur[n - 1]);
+    cur = out;
+  }
+  return cur;
+}
+
+export function smooth(pts: Pt[], closed: boolean, samples = 8): Pt[] {
+  return chaikin(pts, closed, Math.max(1, Math.round(samples / 4)));
 }
 
 export function arc3(
@@ -51,7 +71,6 @@ export function P(proj: Proj, pts: Pt3[]): Pt[] {
   return pts.map((p) => proj(p[0], p[1], p[2]));
 }
 
-// far-side drop + keep features on the skull disk
 export function visible(x: number, yaw: number): boolean {
   return x * Math.sin(yaw) > -0.55;
 }

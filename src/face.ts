@@ -1,4 +1,5 @@
 import { pickW, mulberry32 } from "./rng";
+import { ACCENTS, HALOS, HAIRS, SKINS } from "./ink";
 import type { Face, Rng } from "./types";
 
 const SKULL: Record<Face["skull"], [number, number]> = {
@@ -17,6 +18,7 @@ export function buildFace(seed: number): Face {
     ["egg", 24], ["round", 20], ["long", 16], ["wide", 14], ["block", 10], ["pear", 10], ["gaunt", 6],
   ]);
   const [hrx, hry] = SKULL[skull];
+  const plain = rng() < 0.12;
   return {
     seed, skull, hrx, hry,
     eyes: pickW(rng, [["bags", 18], ["dead", 18], ["round", 16], ["side", 14], ["hollow", 12], ["wide", 12], ["squint", 10]]),
@@ -26,7 +28,11 @@ export function buildFace(seed: number): Face {
     hair: pickW(rng, [["bowl", 18], ["buzz", 14], ["spikes", 12], ["curl", 12], ["side", 12], ["none", 12], ["hat", 10], ["baldspot", 10]]),
     facial: pickW(rng, [["none", 52], ["stubble", 16], ["mustache", 16], ["goatee", 16]]),
     glasses: pickW(rng, [["none", 58], ["round", 16], ["square", 14], ["shades", 12]]),
-    ink: pickW(rng, [["#241f1a", 52], ["#4a3423", 16], ["#2f3b45", 12], ["#6f3327", 10], ["#374436", 10]]),
+    mod: pickW(rng, [["none", 62], ["visor", 14], ["patch", 12], ["cyber", 12]]),
+    mark: pickW(rng, [["none", 64], ["scar", 14], ["seam", 12], ["barcode", 10]]),
+    ink: rng() < 0.22 ? HAIRS[(rng() * HAIRS.length) | 0] : "#1f1d1a",
+    halo: !plain && rng() < 0.72 ? HALOS[(rng() * HALOS.length) | 0] : (rng() < 0.2 ? ACCENTS[(rng() * ACCENTS.length) | 0] : null),
+    skin: !plain && rng() < 0.55 ? SKINS[(rng() * SKINS.length) | 0] : null,
     yaw: (rng() * 2 - 1) * 0.72,
     pitch: (rng() * 2 - 1) * 0.16,
     asym: (rng() * 2 - 1) * 0.06,
@@ -34,6 +40,15 @@ export function buildFace(seed: number): Face {
     a2: 0.06 + rng() * 0.08, a3: 0.03 + rng() * 0.06,
     tilt: (rng() * 2 - 1) * 0.06,
   };
+}
+
+export function caption(T: Face): string {
+  const bits: string[] = [T.skull, T.eyes, T.hair];
+  if (T.glasses !== "none") bits.push(T.glasses);
+  if (T.mod !== "none") bits.push(T.mod);
+  if (T.mark !== "none") bits.push(T.mark);
+  if (T.facial !== "none") bits.push(T.facial);
+  return bits.join(" · ");
 }
 
 export function headPath(T: Face, rng: Rng): [number, number, number][] {
