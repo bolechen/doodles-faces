@@ -1,30 +1,36 @@
 # doodles-faces
 
 Type a **username** → get a hand-drawn ink avatar.  
-Same name → same face. Pure JS canvas, no AI, no build.
+Same name → same face. Canvas + TypeScript, no AI.
 
-Inspired by [@mannay](https://x.com/mannay/status/2087522034351796728).
+Inspired by [@mannay](https://x.com/mannay/status/2087522034351796728): parts are code, pinned on a rough 3D skull.
 
-## Use
-
-- Type in the input (debounced 180ms) → face updates
-- **rnd** — random name
-- **share** — Web Share API, else copy `?u=name` link
-- **download** — PNG
-
-Share URL: `https://yoursite/?u=ada`
-
-## Run
+## Dev
 
 ```bash
-open index.html
-# or
-npx serve .
+pnpm i
+pnpm dev
 ```
 
-## Deploy (Vercel)
+## Build / Vercel
 
 ```bash
-npx vercel
-npx vercel --prod
+pnpm build
+pnpm dlx vercel
+pnpm dlx vercel --prod
+```
+
+Vite static output in `dist/`. `vercel.json` points the build there.
+
+## Layout
+
+```
+src/
+  types.ts   # Face DNA
+  rng.ts     # mulberry32 + FNV
+  geom.ts    # 3D project / pin-to-skull
+  ink.ts     # dry-brush + paper grain
+  face.ts    # seed → traits
+  draw.ts    # painters (add a variant here)
+  main.ts    # username UI
 ```
