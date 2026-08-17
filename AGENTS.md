@@ -5,7 +5,7 @@ Workflow rules for AI agents working in this repo.
 ## Tooling
 
 - **Package manager**: pnpm (never npm). Build: `pnpm build` (= `tsc --noEmit && vite build`). Dev: `pnpm dev`.
-- **Testing**: no framework installed yet. If adding, use vitest and only test pure functions (`src/rng.ts`, `src/face.ts`, `src/geom.ts`) — never canvas rendering.
+- **Testing**: vitest (`pnpm test`). `src/face.test.ts` locks determinism (hash/rng/face/mix) and the src ↔ `api/_lib/dna` sync — run it after touching `face.ts` / `rng.ts` / `dna.ts`. Only pure functions are tested, never canvas rendering.
 - **Formatting/lint**: none configured. Match existing style (Biome-style, no semicolons avoided — follow the file's own conventions).
 
 ## Git workflow
@@ -38,7 +38,7 @@ runtime is ESM and Vercel compiles each `.ts` to `.js`.
 
 ## Feature notes
 
-- **Mix**: `?u=a&with=b` renders a blended face via `mixFace` (traits inherited one side each, continuous values averaged, seed derived from both names). `mixName` derives the display name.
+- **Mix**: `?u=a&with=b` renders a blended face via `mixFace` (traits inherited one side each, continuous values averaged, seed derived from both names). Display label is `name × with`; `drawMix` is the shared canvas renderer.
 - **Dark mode**: `localStorage["df-theme"]`, falls back to `prefers-color-scheme`, default light. Toggle in hero.
 - **Fonts**: brand = Caveat, inputs = Gochi Hand, UI = mono. Google Fonts loaded non-blocking (`media="print" onload`) — keep it that way to avoid FOUC.
 - **Tailwind v4**: tokens in `@theme` (`--color-*`, `--font-*`), dark palette via `html[data-theme="dark"]` overrides. Preflight resets custom width/margin — re-check container spacing after refactors.

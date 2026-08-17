@@ -22,7 +22,6 @@
   "dependencies": {
     "@napi-rs/canvas": "^1.0.6",
     "@vercel/analytics": "^2.0.1",
-    "@vercel/og": "^1.0.1",
     "lucide": "^1.31.0"
   }
 }

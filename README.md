@@ -54,6 +54,7 @@ assembled onto a rough 3D skull, roughed up with a graphite stroke engine.
 ```bash
 pnpm i
 pnpm dev
+pnpm test          # determinism + src/_lib sync
 ```
 
 ## Build / Deploy
