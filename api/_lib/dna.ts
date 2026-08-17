@@ -2,6 +2,8 @@
 // Mirrors src/face.ts + the palette constants from src/ink.ts, but depends on
 // nothing (no canvas, no DOM) so Vercel can bundle it without file tracing.
 
+import type { Face } from "./types.js";
+
 export type Rng = () => number;
 
 export function mulberry32(a: number): Rng {
@@ -46,25 +48,7 @@ const SKINS = ["#8a5d42", "#a4714f", "#c08a5c", "#e3c9a0", "#d9a98f", "#9c8878",
 const HAIRS = ["#aa6030", "#b49648", "#5c8478", "#5c688c", "#8c6058"];
 const ACCENTS = ["#a8483c", "#568278", "#b2863a"];
 
-export type Face = {
-  seed: number;
-  skull: string;
-  hrx: number;
-  hry: number;
-  eyes: string;
-  brow: string;
-  nose: string;
-  mouth: string;
-  hair: string;
-  facial: string;
-  glasses: string;
-  mod: string;
-  mark: string;
-  ink: string;
-  halo: string | null;
-  skin: string | null;
-  yaw: number;
-};
+
 
 export function buildFace(seed: number): Face {
   const rng = mulberry32(seed);
@@ -89,6 +73,11 @@ export function buildFace(seed: number): Face {
     halo: !plain && rng() < 0.72 ? HALOS[(rng() * HALOS.length) | 0] : (rng() < 0.2 ? ACCENTS[(rng() * ACCENTS.length) | 0] : null),
     skin: !plain && rng() < 0.55 ? SKINS[(rng() * SKINS.length) | 0] : null,
     yaw: (rng() * 2 - 1) * 0.72,
+    pitch: (rng() * 2 - 1) * 0.16,
+    asym: (rng() * 2 - 1) * 0.06,
+    ph1: rng() * 6.28, ph2: rng() * 6.28, ph3: rng() * 6.28,
+    a2: 0.06 + rng() * 0.08, a3: 0.03 + rng() * 0.06,
+    tilt: (rng() * 2 - 1) * 0.06,
   };
 }
 
@@ -99,4 +88,19 @@ export function caption(T: Face): string {
   if (T.mark !== "none") bits.push(T.mark);
   if (T.facial !== "none") bits.push(T.facial);
   return bits.join(" · ");
+}
+
+export function headPath(T: Face, rng: Rng): [number, number, number][] {
+  const n = 28, pts: [number, number, number][] = [];
+  for (let i = 0; i < n; i++) {
+    const a = (i / n) * Math.PI * 2;
+    const rw = 1 + T.a2 * Math.sin(a * 2 + T.ph1) + T.a3 * Math.sin(a * 3 + T.ph2) + (rng() * 2 - 1) * 0.028;
+    const rh = 1 + T.a3 * Math.cos(a * 2 + T.ph3);
+    pts.push([
+      Math.cos(a) * T.hrx * rw + T.tilt * Math.sin(a),
+      Math.sin(a) * T.hry * rh,
+      0,
+    ]);
+  }
+  return pts;
 }

@@ -2,7 +2,7 @@ import { createIcons, Dices, Download, GitFork, Moon, Share2, Sparkles, Sun, Use
 import { inject } from "@vercel/analytics";
 import { hashStr } from "./rng";
 import { buildFace, caption } from "./face";
-import { drawFace, renderAvatar, renderCrowd, renderShareCard } from "./draw";
+import { drawFace, drawMix, renderAvatar, renderCrowd, renderMixCard, renderShareCard } from "./draw";
 import "./style.css";
 
 createIcons({
@@ -108,7 +108,7 @@ function render(): void {
   }
   sizeCanvas(false);
   if (current.withName) {
-    paperSplit(seed, hashStr(current.withName.toLowerCase()));
+    renderMixOnCanvas(ctx, seed, hashStr(current.withName.toLowerCase()));
     hintEl.textContent = `${name} × ${current.withName}`;
   } else {
     renderAvatar(ctx, seed);
@@ -116,17 +116,8 @@ function render(): void {
   }
 }
 
-function paperSplit(a: number, b: number): void {
-  const { width: w, height: h } = canvas;
-  ctx.clearRect(0, 0, w, h);
-  const left = document.createElement("canvas");
-  const right = document.createElement("canvas");
-  left.width = right.width = w / 2;
-  left.height = right.height = h;
-  renderAvatar(left.getContext("2d")!, a);
-  renderAvatar(right.getContext("2d")!, b);
-  ctx.drawImage(left, 0, 0);
-  ctx.drawImage(right, w / 2, 0);
+function renderMixOnCanvas(c: CanvasRenderingContext2D, a: number, b: number): void {
+  drawMix(c, a, b, 0.46, 760);
 }
 
 function schedule(syncUrl = true): void {
@@ -143,21 +134,28 @@ function cardCanvas(): HTMLCanvasElement {
   const card = document.createElement("canvas");
   card.width = 1200;
   card.height = 630;
-  renderShareCard(card.getContext("2d")!, current.seed, current.name, caption(buildFace(current.seed)));
+  const g = card.getContext("2d")!;
+  if (current.withName) {
+    renderMixCard(g, current.seed, hashStr(current.withName.toLowerCase()), current.name, current.withName);
+  } else {
+    renderShareCard(g, current.seed, current.name, caption(buildFace(current.seed)));
+  }
   return card;
 }
 
 function downloadPng(): void {
   const src = mode === "solo" && !current.withName ? cardCanvas() : canvas;
   const a = document.createElement("a");
-  a.download = `doodle-${current.name}.png`;
+  a.download = `doodle-${current.withName ? current.name + "-" + current.withName : current.name}.png`;
   a.href = src.toDataURL("image/png");
   a.click();
 }
 
 async function share(): Promise<void> {
   const url = shareUrl(current.name, current.withName);
-  const title = `${current.name}'s doodle face`;
+  const title = current.withName
+    ? `${current.name} × ${current.withName}`
+    : `${current.name}'s doodle face`;
   try {
     if (navigator.share) {
       const blob = await new Promise<Blob | null>((res) => cardCanvas().toBlob(res, "image/png"));

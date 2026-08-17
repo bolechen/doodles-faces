@@ -42,6 +42,46 @@ export function buildFace(seed: number): Face {
   };
 }
 
+// Mix: a deterministic blend of two faces. Trait-categorical features are
+// inherited one side each (so the child visibly resembles both), continuous
+// values are averaged, and the seed is derived from both names so the same
+// couple always yields the same child.
+export function mixFace(a: Face, b: Face): Face {
+  const pick = <T,>(x: T, y: T): T => (a.seed < b.seed ? x : y);
+  const mid = (x: number, y: number) => (x + y) / 2;
+  const l = a.seed < b.seed ? a : b;
+  const r = a.seed < b.seed ? b : a;
+  const seed = (a.seed ^ (Math.imul(b.seed, 0x9e3779b9) >>> 0)) >>> 0;
+  const [hrx, hry] = SKULL[pick(l.skull, r.skull)];
+  return {
+    seed,
+    skull: pick(l.skull, r.skull),
+    hrx: mid(a.hrx, b.hrx),
+    hry: mid(a.hry, b.hry),
+    eyes: pick(l.eyes, r.eyes),
+    brow: pick(l.brow, r.brow),
+    nose: pick(r.nose, l.nose),
+    mouth: pick(r.mouth, l.mouth),
+    hair: pick(l.hair, r.hair),
+    facial: pick(r.facial, l.facial),
+    glasses: pick(l.glasses, r.glasses),
+    mod: pick(r.mod, l.mod),
+    mark: pick(l.mark, r.mark),
+    ink: pick(l.ink, r.ink),
+    halo: l.halo ?? r.halo,
+    skin: l.skin ?? r.skin,
+    yaw: mid(a.yaw, b.yaw),
+    pitch: mid(a.pitch, b.pitch),
+    asym: mid(a.asym, b.asym),
+    ph1: mid(a.ph1, b.ph1),
+    ph2: mid(a.ph2, b.ph2),
+    ph3: mid(a.ph3, b.ph3),
+    a2: mid(a.a2, b.a2),
+    a3: mid(a.a3, b.a3),
+    tilt: mid(a.tilt, b.tilt),
+  };
+}
+
 export function caption(T: Face): string {
   const bits: string[] = [T.skull, T.eyes, T.hair];
   if (T.glasses !== "none") bits.push(T.glasses);

@@ -23,7 +23,8 @@ assembled onto a rough 3D skull, roughed up with a graphite stroke engine.
 
 **What makes it fun**
 - A name is a seed. Share `?u=ada` and everyone sees the same ada.
-- Draw two people at once with `?u=ada&with=bob`.
+- Mix two people with `?u=ada&with=bob`: a blended face that inherits traits
+  from both, shareable as an `ada × bob` card.
 - Crowd view renders a 5×3 sheet; click any cell and that person changes.
 - Every face comes with a trait caption (`gaunt · round · none · seam`).
 
@@ -32,7 +33,7 @@ assembled onto a rough 3D skull, roughed up with a graphite stroke engine.
 | Mode | What it does |
 |---|---|
 | Portrait | One graphite head from a username (`?u=name`) |
-| Duo | Two heads on one sheet (`?u=a&with=b`) |
+| Mix | A blended face from two names (`?u=a&with=b`) |
 | Crowd | A 5×3 sheet of faces from one seed (`?view=crowd`) |
 | Share | Web Share API with a 1200×630 PNG card, or a copyable link |
 | Save | Download the card or the crowd sheet as PNG |
@@ -44,14 +45,16 @@ assembled onto a rough 3D skull, roughed up with a graphite stroke engine.
   instead of sliding around in 2D.
 - **Graphite engine** — ribbon strokes with variable width, dry granulation,
   paper grain, and muted color washes. Everything is drawn, nothing is loaded.
-- **Dynamic OG** — a Vercel serverless function renders a per-name card for
-  social previews (`/api/og?u=ada`).
+- **Dynamic OG** — `/api/og?u=name` renders the real graphite face server-side
+  (`@napi-rs/canvas`, node runtime) for social previews. Same name, same face,
+  same card.
 
 ## Dev
 
 ```bash
 pnpm i
 pnpm dev
+pnpm test          # determinism + src/_lib sync
 ```
 
 ## Build / Deploy

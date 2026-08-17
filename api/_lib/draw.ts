@@ -1,8 +1,7 @@
-import { arc3, makeProj, P, pin, visible } from "./geom";
-import { blob, grain, ink, paper, patch, wash } from "./ink";
-import { buildFace, headPath, mixFace } from "./face";
-import { mulberry32 } from "./rng";
-import type { Face, Proj, Pt3, Rng } from "./types";
+import { arc3, makeProj, P, pin, visible } from "./geom.js";
+import { blob, ink, paper, patch, wash } from "./ink.js";
+import { buildFace, headPath, mulberry32 } from "./dna.js";
+import type { Face, Proj, Pt3, Rng } from "./types.js";
 
 function clampOnSkull(T: Face, x: number, y: number): [number, number] {
   return pin(x, y, T.hrx, T.hry, 0.14);
@@ -309,79 +308,4 @@ function drawMod(ctx: CanvasRenderingContext2D, proj: Proj, lE: Pt3, rE: Pt3, s:
     const [px, py] = proj(E[0], E[1], 0.34);
     blob(ctx, px, py, 4 * s, C);
   }
-}
-
-export function renderAvatar(ctx: CanvasRenderingContext2D, seed: number): void {
-  const { width: w, height: h } = ctx.canvas;
-  paper(ctx, w, h, seed);
-  drawFace(ctx, w / 2, h * 0.5, w / 720, buildFace(seed));
-  grain(ctx, w, h, seed);
-}
-
-export function renderShareCard(
-  ctx: CanvasRenderingContext2D, seed: number, name: string, line: string,
-): void {
-  const { width: w, height: h } = ctx.canvas;
-  paper(ctx, w, h, seed);
-  drawFace(ctx, w / 2, h * 0.44, w / 820, buildFace(seed));
-  grain(ctx, w, h, seed);
-  ctx.save();
-  ctx.fillStyle = "#1f1d1a";
-  ctx.font = `600 ${Math.round(w * 0.055)}px ui-monospace, SFMono-Regular, Menlo, monospace`;
-  ctx.textAlign = "center";
-  ctx.fillText(`@${name}`, w / 2, h * 0.86);
-  ctx.globalAlpha = 0.55;
-  ctx.font = `${Math.round(w * 0.028)}px ui-monospace, SFMono-Regular, Menlo, monospace`;
-  ctx.fillText(line, w / 2, h * 0.91);
-  ctx.restore();
-}
-
-// Draw a blended face from two seeds onto the canvas (paper + face + grain).
-// yRatio and scale control placement for the canvas vs. the share card.
-export function drawMix(
-  ctx: CanvasRenderingContext2D, seedA: number, seedB: number, yRatio: number, scale: number,
-): void {
-  const { width: w, height: h } = ctx.canvas;
-  const child = mixFace(buildFace(seedA), buildFace(seedB));
-  paper(ctx, w, h, child.seed);
-  drawFace(ctx, w / 2, h * yRatio, w / scale, child);
-  grain(ctx, w, h, child.seed);
-}
-
-// Share card for a mix: one blended face + both parents' names.
-export function renderMixCard(
-  ctx: CanvasRenderingContext2D, seedA: number, seedB: number, labelA: string, labelB: string,
-): void {
-  const { width: w, height: h } = ctx.canvas;
-  drawMix(ctx, seedA, seedB, 0.44, 820);
-  ctx.save();
-  ctx.fillStyle = "#1f1d1a";
-  ctx.textAlign = "center";
-  ctx.font = `600 ${Math.round(w * 0.05)}px ui-monospace, SFMono-Regular, Menlo, monospace`;
-  ctx.fillText(`${labelA} × ${labelB}`, w / 2, h * 0.84);
-  ctx.globalAlpha = 0.55;
-  ctx.font = `${Math.round(w * 0.026)}px ui-monospace, SFMono-Regular, Menlo, monospace`;
-  ctx.fillText("a doodles-faces mix", w / 2, h * 0.9);
-  ctx.restore();
-}
-
-export function renderCrowd(ctx: CanvasRenderingContext2D, baseSeed: number, cols: number, rows: number): number[] {
-  const { width: w, height: h } = ctx.canvas;
-  paper(ctx, w, h, baseSeed);
-  const seeds: number[] = [];
-  const cw = w / cols, ch = h / rows;
-  for (let i = 0; i < cols * rows; i++) {
-    const seed = (baseSeed + Math.imul(i + 1, 0x9e3779b9)) >>> 0;
-    seeds.push(seed);
-    const x = (i % cols) * cw + cw / 2;
-    const y = Math.floor(i / cols) * ch + ch / 2;
-    ctx.save();
-    ctx.beginPath();
-    ctx.rect((i % cols) * cw, Math.floor(i / cols) * ch, cw, ch);
-    ctx.clip();
-    drawFace(ctx, x, y, Math.min(cw, ch) / 280, buildFace(seed));
-    ctx.restore();
-  }
-  grain(ctx, w, h, baseSeed);
-  return seeds;
 }
