@@ -23,20 +23,17 @@ export default function handler(req: VercelRequest, res: VercelResponse): void {
   const canvas = createCanvas(W, H);
   const ctx = asDom(canvas.getContext("2d"));
   paper(ctx, W, H, seed);
-  drawFace(ctx, W / 2, H * 0.44, W / 780, T);
+  drawFace(ctx, W / 2, H * 0.35, W / 1200, T);
 
-  // card text
+  // card text: name + site title only
   ctx.save();
   ctx.fillStyle = "#1f1d1a";
   ctx.textAlign = "center";
-  ctx.font = "600 58px ui-monospace, Menlo, monospace";
-  ctx.fillText(`@${name}`, W / 2, H * 0.86);
-  ctx.globalAlpha = 0.55;
-  ctx.font = "26px ui-monospace, Menlo, monospace";
-  ctx.fillText(caption(T), W / 2, H * 0.87);
+  ctx.font = "600 52px ui-monospace, Menlo, monospace";
+  ctx.fillText(`@${name}`, W / 2, H * 0.84);
   ctx.globalAlpha = 0.55;
   ctx.font = "24px ui-monospace, Menlo, monospace";
-  ctx.fillText("doodles faces", W / 2, H * 0.92);
+  ctx.fillText("doodles faces", W / 2, H * 0.9);
   ctx.restore();
 
   const img = canvas.toBuffer("image/png");
