@@ -1,6 +1,6 @@
 import { createCanvas, GlobalFonts, type SKRSContext2D } from "@napi-rs/canvas";
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { buildFace, caption, hashStr } from "./_lib/dna.js";
+import { buildFace, hashStr } from "./_lib/dna.js";
 import { drawFace } from "./_lib/draw.js";
 import { paper } from "./_lib/ink.js";
 
