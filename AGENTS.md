@@ -30,7 +30,9 @@ the OG card render different faces for the same name. `mixFace` lives only in
 `src/face.ts` — the OG endpoint renders single faces and does not need it.
 
 Keep relative imports in `api/` extensioned (`./_lib/dna.js`) — the node
-runtime is ESM and Vercel compiles each `.ts` to `.js`.
+runtime is ESM and Vercel compiles each `.ts` to `.js`. The OG endpoint also
+bundles `andale-mono.ttf` (registered via `GlobalFonts`) because the Linux
+runtime has no macOS system fonts — keep it in sync if the card text changes.
 
 ### Determinism is the product
 

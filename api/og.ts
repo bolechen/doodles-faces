@@ -1,8 +1,12 @@
-import { createCanvas, type SKRSContext2D } from "@napi-rs/canvas";
+import { createCanvas, GlobalFonts, type SKRSContext2D } from "@napi-rs/canvas";
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { buildFace, caption, hashStr } from "./_lib/dna.js";
+import { buildFace, hashStr } from "./_lib/dna.js";
 import { drawFace } from "./_lib/draw.js";
 import { paper } from "./_lib/ink.js";
+
+// Bundle a mono font so text renders on the Linux runtime (no Menlo there).
+const FONT = "Andale Mono";
+GlobalFonts.registerFromPath(new URL("./_lib/andale-mono.ttf", import.meta.url).pathname, FONT);
 
 export const config = { runtime: "nodejs" };
 
@@ -23,17 +27,17 @@ export default function handler(req: VercelRequest, res: VercelResponse): void {
   const canvas = createCanvas(W, H);
   const ctx = asDom(canvas.getContext("2d"));
   paper(ctx, W, H, seed);
-  drawFace(ctx, W / 2, H * 0.44, W / 780, T);
+  drawFace(ctx, W / 2, H * 0.35, W / 1200, T);
 
-  // card text
+  // card text: name + site title only
   ctx.save();
   ctx.fillStyle = "#1f1d1a";
   ctx.textAlign = "center";
-  ctx.font = "600 58px ui-monospace, Menlo, monospace";
-  ctx.fillText(`@${name}`, W / 2, H * 0.86);
+  ctx.font = `600 52px ${FONT}, monospace`;
+  ctx.fillText(`@${name}`, W / 2, H * 0.84);
   ctx.globalAlpha = 0.55;
-  ctx.font = "26px ui-monospace, Menlo, monospace";
-  ctx.fillText(caption(T), W / 2, H * 0.92);
+  ctx.font = `24px ${FONT}, monospace`;
+  ctx.fillText("doodles faces", W / 2, H * 0.9);
   ctx.restore();
 
   const img = canvas.toBuffer("image/png");

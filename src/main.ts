@@ -138,7 +138,7 @@ function cardCanvas(): HTMLCanvasElement {
   if (current.withName) {
     renderMixCard(g, current.seed, hashStr(current.withName.toLowerCase()), current.name, current.withName);
   } else {
-    renderShareCard(g, current.seed, current.name, caption(buildFace(current.seed)));
+    renderShareCard(g, current.seed, current.name);
   }
   return card;
 }

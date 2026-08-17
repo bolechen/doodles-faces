@@ -319,20 +319,20 @@ export function renderAvatar(ctx: CanvasRenderingContext2D, seed: number): void 
 }
 
 export function renderShareCard(
-  ctx: CanvasRenderingContext2D, seed: number, name: string, line: string,
+  ctx: CanvasRenderingContext2D, seed: number, name: string,
 ): void {
   const { width: w, height: h } = ctx.canvas;
   paper(ctx, w, h, seed);
-  drawFace(ctx, w / 2, h * 0.44, w / 820, buildFace(seed));
+  drawFace(ctx, w / 2, h * 0.35, w / 1200, buildFace(seed));
   grain(ctx, w, h, seed);
   ctx.save();
   ctx.fillStyle = "#1f1d1a";
-  ctx.font = `600 ${Math.round(w * 0.055)}px ui-monospace, SFMono-Regular, Menlo, monospace`;
+  ctx.font = `600 ${Math.round(w * 0.043)}px ui-monospace, SFMono-Regular, Menlo, monospace`;
   ctx.textAlign = "center";
-  ctx.fillText(`@${name}`, w / 2, h * 0.86);
+  ctx.fillText(`@${name}`, w / 2, h * 0.84);
   ctx.globalAlpha = 0.55;
-  ctx.font = `${Math.round(w * 0.028)}px ui-monospace, SFMono-Regular, Menlo, monospace`;
-  ctx.fillText(line, w / 2, h * 0.91);
+  ctx.font = `${Math.round(w * 0.02)}px ui-monospace, SFMono-Regular, Menlo, monospace`;
+  ctx.fillText("doodles faces", w / 2, h * 0.9);
   ctx.restore();
 }
 
