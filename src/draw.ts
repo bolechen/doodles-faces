@@ -332,10 +332,10 @@ export function renderShareCard(
   ctx.fillText(`@${name}`, w / 2, h * 0.86);
   ctx.globalAlpha = 0.55;
   ctx.font = `${Math.round(w * 0.028)}px ui-monospace, SFMono-Regular, Menlo, monospace`;
-  ctx.fillText(line, w / 2, h * 0.91);
+  ctx.fillText(line, w / 2, h * 0.885);
   ctx.globalAlpha = 0.35;
   ctx.font = `${Math.round(w * 0.02)}px ui-monospace, SFMono-Regular, Menlo, monospace`;
-  ctx.fillText("doodles faces", w / 2, h * 0.955);
+  ctx.fillText("doodles faces", w / 2, h * 0.93);
   ctx.restore();
 }
 
