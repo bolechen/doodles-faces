@@ -46,8 +46,8 @@ assembled onto a rough 3D skull, roughed up with a graphite stroke engine.
 - **Graphite engine** — ribbon strokes with variable width, dry granulation,
   paper grain, and muted color washes. Everything is drawn, nothing is loaded.
 - **Dynamic OG** — `/api/og?u=name` renders the real graphite face server-side
-  (`@napi-rs/canvas`, node runtime) for social previews. Same name, same face,
-  same card.
+  (`@napi-rs/canvas`, node runtime, bundled Andale Mono font for Linux) for
+  social previews. Same name, same face, same card.
 
 ## Dev
 
