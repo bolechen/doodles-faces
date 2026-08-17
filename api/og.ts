@@ -34,6 +34,9 @@ export default function handler(req: VercelRequest, res: VercelResponse): void {
   ctx.globalAlpha = 0.55;
   ctx.font = "26px ui-monospace, Menlo, monospace";
   ctx.fillText(caption(T), W / 2, H * 0.92);
+  ctx.globalAlpha = 0.35;
+  ctx.font = "20px ui-monospace, Menlo, monospace";
+  ctx.fillText("doodles faces", W / 2, H * 0.965);
   ctx.restore();
 
   const img = canvas.toBuffer("image/png");
