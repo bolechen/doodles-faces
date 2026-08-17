@@ -82,11 +82,6 @@ export function mixFace(a: Face, b: Face): Face {
   };
 }
 
-export function mixName(a: string, b: string): string {
-  if (!a || !b) return a || b || "anonymous";
-  return `${a[0]}${b[0]}${a.length >= 2 ? a[1] : ""}${b.length >= 2 ? b[1] : ""}`.slice(0, 4).toLowerCase();
-}
-
 export function caption(T: Face): string {
   const bits: string[] = [T.skull, T.eyes, T.hair];
   if (T.glasses !== "none") bits.push(T.glasses);

@@ -2,9 +2,7 @@ import { createIcons, Dices, Download, GitFork, Moon, Share2, Sparkles, Sun, Use
 import { inject } from "@vercel/analytics";
 import { hashStr } from "./rng";
 import { buildFace, caption } from "./face";
-import { drawFace, renderAvatar, renderCrowd, renderMixCard, renderShareCard } from "./draw";
-import { mixFace } from "./face";
-import { grain, paper } from "./ink";
+import { drawFace, drawMix, renderAvatar, renderCrowd, renderMixCard, renderShareCard } from "./draw";
 import "./style.css";
 
 createIcons({
@@ -119,11 +117,7 @@ function render(): void {
 }
 
 function renderMixOnCanvas(c: CanvasRenderingContext2D, a: number, b: number): void {
-  const { width: w, height: h } = c.canvas;
-  const child = mixFace(buildFace(a), buildFace(b));
-  paper(c, w, h, child.seed);
-  drawFace(c, w / 2, h * 0.46, w / 760, child);
-  grain(c, w, h, child.seed);
+  drawMix(c, a, b, 0.46, 760);
 }
 
 function schedule(syncUrl = true): void {

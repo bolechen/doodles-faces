@@ -336,17 +336,24 @@ export function renderShareCard(
   ctx.restore();
 }
 
+// Draw a blended face from two seeds onto the canvas (paper + face + grain).
+// yRatio and scale control placement for the canvas vs. the share card.
+export function drawMix(
+  ctx: CanvasRenderingContext2D, seedA: number, seedB: number, yRatio: number, scale: number,
+): void {
+  const { width: w, height: h } = ctx.canvas;
+  const child = mixFace(buildFace(seedA), buildFace(seedB));
+  paper(ctx, w, h, child.seed);
+  drawFace(ctx, w / 2, h * yRatio, w / scale, child);
+  grain(ctx, w, h, child.seed);
+}
+
 // Share card for a mix: one blended face + both parents' names.
 export function renderMixCard(
   ctx: CanvasRenderingContext2D, seedA: number, seedB: number, labelA: string, labelB: string,
 ): void {
   const { width: w, height: h } = ctx.canvas;
-  const fa = buildFace(seedA);
-  const fb = buildFace(seedB);
-  const child = mixFace(fa, fb);
-  paper(ctx, w, h, child.seed);
-  drawFace(ctx, w / 2, h * 0.44, w / 820, child);
-  grain(ctx, w, h, child.seed);
+  drawMix(ctx, seedA, seedB, 0.44, 820);
   ctx.save();
   ctx.fillStyle = "#1f1d1a";
   ctx.textAlign = "center";

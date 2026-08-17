@@ -17,9 +17,20 @@ Workflow rules for AI agents working in this repo.
 
 ## Critical invariants
 
-### `api/_lib/dna.ts` is a copy of the face DNA logic
+### `api/_lib/*` mirrors the drawing modules
 
-Vercel cannot bundle `../src/*` into serverless functions (that's why the OG endpoint has its own copy). **When you change `src/face.ts` (traits, weights, `mixFace`) or the palette constants in `src/ink.ts`, you MUST mirror the change in `api/_lib/dna.ts`.** Otherwise the web page and the OG share card (`/api/og?u=...`) render different faces for the same name.
+Vercel cannot bundle `../src/*` into serverless functions, so the OG endpoint
+(`api/og.ts`, node runtime + `@napi-rs/canvas`) ships its own DOM-free copies:
+`dna.ts` (seed → traits), `draw.ts`, `geom.ts`, `ink.ts`, `types.ts`.
+
+**When you change `src/face.ts` (traits, weights), the palette constants in
+`src/ink.ts`, or any drawing logic, you MUST mirror the change in
+`api/_lib/dna.ts` / `draw.ts` / `ink.ts` / `geom.ts`.** Otherwise the page and
+the OG card render different faces for the same name. `mixFace` lives only in
+`src/face.ts` — the OG endpoint renders single faces and does not need it.
+
+Keep relative imports in `api/` extensioned (`./_lib/dna.js`) — the node
+runtime is ESM and Vercel compiles each `.ts` to `.js`.
 
 ### Determinism is the product
 
