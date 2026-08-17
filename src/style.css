@@ -74,7 +74,6 @@ html[data-theme="dark"] .sheet {
   background: linear-gradient(90deg, var(--color-paper) 0%, color-mix(in srgb, var(--color-paper) 60%, transparent) 42%, transparent 68%);
 }
 .hero-text, .stamp { z-index: 1; }
-
 /* handwriting accents */
 .brand {
   @apply font-sign;
@@ -112,6 +111,12 @@ html[data-theme="dark"] .sheet {
 @media (max-width: 780px) {
   .desk { grid-template-columns: 1fr; }
   .stamp { display: none; }
+  .hero-text { max-width: 72%; left: 16px; bottom: 14px; }
+  .brand { font-size: clamp(34px, 9vw, 52px); line-height: 0.9; }
+  .theme-toggle { right: 10px; top: 10px; }
+}
+@media (max-width: 480px) {
+  .lede { display: none; }
 }
 .stage { @apply relative aspect-square overflow-hidden border border-line bg-paper; }
 .stage.crowd { aspect-ratio: 16 / 10; cursor: pointer; }
